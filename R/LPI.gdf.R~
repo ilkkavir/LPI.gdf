@@ -1,0 +1,92 @@
+## file:LPI.R
+## (c) 2010- University of Oulu, Finland
+## Written by Ilkka Virtanen <ilkka.i.virtanen@oulu.fi>
+## Licensed under FreeBSD license.
+
+##
+## The main analysis loop of LPI
+##
+## Arguments:
+##   ... Arguments to be passed for collectLPIparam that
+##       constructs the final LPI parameter list
+##
+## 
+
+LPI <- function( ... )
+  {
+    # Collect the LPI parameter list from default values
+    # and optional input arguments.
+    LPIparam  <- collectLPIparam( ... )
+
+    # Print the parameters
+#    print.listof(LPIparam)
+    
+    # Initialise the computer cluster for LPI.
+    # Save the cluster definitions to the global workspace
+    ctrlcl <<- LPIinitCluster( LPIparam[["clusterNodes"]] )
+    ncl <- length( ctrlcl )
+
+    # A flag telling whether the analysis will be run in some
+    # kind of cluster configuration or in a single process
+    LPIparam[["iscluster"]] <- !all(is.na(ctrlcl))
+
+    # Initialize a list for solved integration periods
+    intPer.ready <- c()
+
+    # Run analysis loop until end of data
+    endOfData <- FALSE
+    repeat{
+
+      # Update the last available data samples
+      LPIparam[["dataEndTimes"]] <- eval( as.name( LPIparam[["endTimeFunction"]] ))( LPIparam )
+ 
+      # Latest integration period for which data is available
+      LPIparam[["maxIntPeriod"]] <- floor( ( min(unlist(LPIparam[["dataEndTimes"]])) - LPIparam[["firstTime"]] ) / LPIparam[["timeRes.s"]] )
+
+      # Select integration period numbers for the next analysis run
+      # Latest periods will be analysed first in order to simplify real-time analysis
+      waitSum <- 0
+      while( is.null( intPer.current <- nextIntegrationPeriods( LPIparam , ncl , intPer.ready ))){
+        
+        # Break the loop after waiting
+        # long enough for new data
+        if( waitSum > LPIparam[["maxWait.s"]] ){
+          endOfData <- TRUE
+          break
+        }
+        
+        # Increment the wait time counter
+        waitSum <- waitSum + 10
+        
+        # Wait 10 seconds more
+        Sys.sleep(10)
+      }
+      
+      if( endOfData ) break
+
+      # Run analysis on each parallel node, or locally if
+      # LPIparam[["iscluster"]]==FALSE
+      if( LPIparam[["iscluster"]] ){
+        clusterApplyLB( ctrlcl , intPer.current , fun=LPI:::LPIsolve.acf , LPIparam )
+      }else{
+        LPI:::LPIsolve.acf( intPer.current , LPIparam )
+      }
+
+      # Print the solved integration periods
+      print(intPer.current)
+
+      # Concatenate the solved periods to the
+      # list of previously solved ones
+      intPer.ready <- c( intPer.ready , intPer.current )
+    
+    } # repeat
+
+    # Shut down the cluster at end of analysis
+    if(!all(is.na(LPIparam[["clusterNodes"]]))) stopCluster( ctrlcl )
+
+    # This function does not return anything,
+    # results are written to files.
+    invisible()
+
+  }
+

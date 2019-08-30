@@ -1,0 +1,10 @@
+Package: LPI.gdf
+Version: 0.1-5
+Date: 2015-11-18
+Title: Lag Profile Inversion with gdf files
+Author: Ilkka Virtanen <ilkka.i.virtanen@oulu.fi>
+Maintainer: Ilkka Virtanen <ilkka.i.virtanen@oulu.fi>
+Description: gdf format I/O routines, wrapper function to LPI, and graphics
+License: FreeBSD
+Depends: LPI, radarPointings, lattice, lomb
+Copyright: University of Oulu, Finland

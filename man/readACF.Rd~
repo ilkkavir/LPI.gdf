@@ -1,0 +1,38 @@
+\name{readACF}
+\title{Average ACF}
+\alias{readACF}
+\description{ Read LPI result files and return the average ACF}
+\usage{ readLPIdir(dpath,recursive=FALSE,lags='all',stdThresh=NULL)}
+
+\arguments{
+  \item{ dpath }{ Data file / directory path(s) as a vector of character
+    strings.}
+  \item{ recursive }{If TRUE, all directories in dpath are searched
+    recursively.}
+  \item{ lags }{ Lag selection. Either a vector of lag numbers, or
+    "all" to read all lags}
+  \item{ stdThresh}{ Standard deviation threshold. Median variance at
+    each range is calculated, and integration periods whose variance is
+    larger than stdThresh times the median at any range gate are stripped off. }
+  }
+  \value{
+    A list with the following elements plus everything listed in the
+    "ACF" list stored in the last data file.
+
+    \describe{
+      
+      \item{ 'ACF' }{ An nRange x nLag x nACF  array of lag profile matrices}
+      \item{ 'var' }{ ACF variance estimates }
+      \item{ 'time.s' }{ Timestamps in seconds }
+      \item{ 'timeString' }{ Timestamps as character strings. }
+      \item{ 'nACF' }{ Number of integration periods. }
+      \item{ 'nLag' }{ Number of lags. }
+      \item{ 'nRange' }{ Number of range gates. }
+      
+    }
+  }
+  
+  
+  
+  \author{Ilkka Virtanen (University of Oulu, Finland) \cr
+    \email{ilkka.i.virtanen@oulu.fi}}

@@ -1,0 +1,24 @@
+export(getDataEndTimes.gdf,
+       readLPIdata.gdf,
+       readData.gdf,
+       LPI.gdf,
+       LPIsaveACF.gdf,
+       LPIexpandInput.gdf,
+       getFileLengths.gdf,
+       UHFazelUpdate ,
+       plotLagProfiles ,
+       readLPIdir ,
+       plotACF ,
+       readACF,
+       plotSpectrum,
+       getSamplingStartTimes.gdf,
+       LPIsaveACF.gdf,
+       listLPIfiles.gdf,
+       fileLength.gdf)
+useDynLib(LPI.gdf)
+S3method(plotACF,character)
+S3method(plotACF,list)
+S3method(plotLagProfiles,character)
+S3method(plotLagProfiles,list)
+S3method(plotSpectrum,character)
+S3method(plotSpectrum,list)
