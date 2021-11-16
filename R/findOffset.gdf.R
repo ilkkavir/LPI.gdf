@@ -41,8 +41,11 @@ findOffset.gdf <- function( dirn , prefix , nInt , extension , fLen , sampFreq ,
     ncdf1 <- nchar(df1)
     
     # Number of the first file
-    firstFile <- as.integer(substr(df1,ncdf1-nInt-3,ncdf1-4))
-    
+#    firstFile <- as.integer(substr(df1,ncdf1-nInt-3,ncdf1-4))
+      iextension <- unlist(gregexpr(extension,df1))
+      iextension <- iextension[length(iextension)]
+      firstFile  <- as.integer(substr(df1,iextension-nInt,iextension-1))
+      
     # Read the data
     for(k in seq(nfMax)){
       kchar <- as.character(k+firstFile-1)
