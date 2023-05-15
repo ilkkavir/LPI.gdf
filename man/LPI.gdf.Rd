@@ -141,6 +141,18 @@
 
 	Default: FALSE
       }
+
+      \item{'minNpower'}{Minimum number of samples to average in power
+	profile calculation. See help of the main LPI package.
+
+	Default: 100
+      }
+
+      \item{'noiseSpikeThreshold'}{Threshold for noise spike
+	detection. Se help of the main LPI package.
+
+	Default: 10
+      }
 	      
       \item{'indexShifts.us'}{Additional adjustements to TX and RX indices
 	in us, see details.

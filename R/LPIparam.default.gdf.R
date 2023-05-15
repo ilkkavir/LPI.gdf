@@ -80,8 +80,15 @@ LPIparam.default.gdf <- function()
         # filter is short compared to baud length,
         # or if strong codes are used)
         ambInterp          = FALSE,
+        # lower limit for number of samples to average in noise
+        # estimation. The global average is used for data points
+        # with less than minNpower samples
+        minNpower          = 100,
 
-
+        # threshold for noise power detection. Points with amplitude
+        # squared largern than noiseSpikeThreshold are rejected
+        noiseSpikeThreshold = 10,
+        
         
         # Functions for data input. Tthese functions
         # will need to be replaced in order to apply
