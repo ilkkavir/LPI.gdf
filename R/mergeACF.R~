@@ -1,0 +1,13 @@
+## file:mergeACF.R
+## (c) 2024- University of Oulu, Finland
+## Written by Ilkka Virtanen <ilkka.i.virtanen@oulu.fi>
+## Licensed under FreeBSD license.
+##
+##
+##
+## merge acf lists for easy plotting
+##
+##
+##
+##
+mergeACF <- function()
