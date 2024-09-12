@@ -45,12 +45,12 @@
 ##
 ##
 
-plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE)
+plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE )
   {
     UseMethod("plotACF")
   }
 
-plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE)
+plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE )
   {
 
     data <- readACF( dpath=data , lags=lags , stdThrsh=stdThrsh )
@@ -64,7 +64,7 @@ plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum
 
   }
 
-plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE)
+plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , ... )
   {
 
     # copy the data list
@@ -202,6 +202,7 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
           colorkey=list(labels=list(col=fg,cex=cex)),
           scales=list(col=fg,cex=cex),
           main=main,
+          ...
           )
         )
     }else{

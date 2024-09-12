@@ -56,8 +56,8 @@ mergeACF <- function(acf1,acf2=NULL,...){
     acfmerge$ACF[1:nr2,(dim1[2]+2):nl] <- acf2$ACF
     acfmerge$var[1:nr2,(dim1[2]+2):nl] <- acf2$var
     ## repeat the first lag profile from acf2 to get the pixels right in plotACF
-    acfmerge$ACF[1:nr2,(dim1[2]+1)] <- acf2$ACF[,1]
-    acfmerge$var[1:nr2,(dim1[2]+1)] <- acf2$var[,1]
+#    acfmerge$ACF[1:nr2,(dim1[2]+1)] <- acf2$ACF[,1]
+ #   acfmerge$var[1:nr2,(dim1[2]+1)] <- acf2$var[,1]
 
     ## call recursively to add the remaining ones
     return(mergeACF(acfmerge,...))
