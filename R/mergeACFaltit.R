@@ -53,6 +53,7 @@ mergeACFaltit <- function(acfs){
     mergeACF$llhR <- acfs[[1]]$llhR
     mergeACF$azelT <- acfs[[1]]$azelT # assume that all measurements are from the same TX beam..
     mergeACF$radarFreq <- acfs[[1]]$radarFreq
+    mergeACF$rangeLimits <- rlims
     
     ## find the most accurate measurement from each range 
     for(k in seq(nr)){
