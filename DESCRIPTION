@@ -6,5 +6,5 @@ Author: Ilkka Virtanen <ilkka.i.virtanen@oulu.fi>
 Maintainer: Ilkka Virtanen <ilkka.i.virtanen@oulu.fi>
 Description: gdf format I/O routines, wrapper function to LPI, and graphics
 License: FreeBSD
-Depends: LPI, radarPointings, lattice, lomb
+Depends: LPI, radarPointings, lattice, lomb, latticeExtra
 Copyright: University of Oulu, Finland
