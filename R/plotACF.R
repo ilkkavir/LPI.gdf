@@ -217,7 +217,7 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
                 cuts=100,
                 xlab=list(xlab,cex=cex,col=fg),
                 ylab=list(ylab,cex=cex,col=fg),
-                colorkey=list(labels=list(col=fg,cex=cex),title=colorkeyTitle),
+                colorkey=list(labels=list(col=fg,cex=cex),title=list(colorkeyTitle,cex=cex,col=fg)),
                 scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE))),
                 xscale.components = xscale.components.log10ticks,
                 main=main,
