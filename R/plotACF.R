@@ -36,6 +36,12 @@
 ##            are used.
 ##  xlog      Logical, should the time-lag axis be logarithmic?
 ##  rscale    Logical, scale with range squared?
+##  main      main title of the plot. The default (NULL) writes the time stamp
+##  xlab      x-axis label. The default (NULL) produces "Lag [ms]" if SIunits==TRUE, "Lag" otherwise
+##  ylab      y-axis label. The default (NULL) produces  "Height [km]", "Range [km]", or "Range", depending on yheight and SIunits
+##  colorkeyTitle Title of the colorkey, default "Power [arb. units]"
+##  col.regions colormap for the levelplot, default beer. For example, rev(gray(seq(1000)/1000))  produces a gray-scale image
+ 
 ##
 ##  Returns:
 ##   data     A list similar to that returned by readACF
@@ -45,12 +51,13 @@
 ##
 ##
 
-plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]')
+
+plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer )
 {
     UseMethod("plotACF")
 }
 
-plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' )
+plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer  )
 {
     
     data <- readACF( dpath=data , lags=lags , stdThrsh=stdThrsh )
@@ -64,7 +71,7 @@ plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum
     
 }
 
-plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , ... )
+plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
 {
     
     ## copy the data list
@@ -203,7 +210,7 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
             levelplot(
                 z~x*y,
                 grid,
-                col.regions=beer,
+                col.regions=col.regions,
                 ylim=ylim,
                 xlim=xlim,
                 at=seq(zlim[1],zlim[2],length.out=100),
