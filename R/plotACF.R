@@ -1,5 +1,5 @@
 ## file:plotACF.R
-## (c) 2010- University of Oulu, Finland
+## (c)g 2010- University of Oulu, Finland
 ## Written by Ilkka Virtanen <ilkka.i.virtanen@oulu.fi>
 ## Licensed under FreeBSD license.
 ##
@@ -30,7 +30,8 @@
 ##  llhT      latitude, longitude, height of transmitter
 ##  azelT     azimuth and elevation of transmitter beam
 ##  llhR      latitude, longitude, height of receiver
-##  lags      Indices of lags to include in the plot
+##  lags      Indices of lags to include in the plot (effective only when "data" is a path to data)
+##  rangess   Indices of ranges to include in the plot  (effective only when "data" is a path to data)
 ##  SIunits   Logical, if TRUE range / height is expressed in km
 ##            and lag in ms, otherwise gates (sample intervals)
 ##            are used.
@@ -41,7 +42,8 @@
 ##  ylab      y-axis label. The default (NULL) produces  "Height [km]", "Range [km]", or "Range", depending on yheight and SIunits
 ##  colorkeyTitle Title of the colorkey, default "Power [arb. units]"
 ##  col.regions colormap for the levelplot, default beer. For example, rev(gray(seq(1000)/1000))  produces a gray-scale image
- 
+##  ---       arguments to be passed to readACF or lattice levelplot/xyplot. For example ,pch=19,type=c('o','g') to plot individual lags/ranges with filled dots connecteb by a line and to add a grid in the brckground
+##
 ##
 ##  Returns:
 ##   data     A list similar to that returned by readACF
@@ -52,26 +54,34 @@
 ##
 
 
-plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer )
+plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL, SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
 {
     UseMethod("plotACF")
 }
 
-plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer  )
+plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL, SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
 {
     
-    data <- readACF( dpath=data , lags=lags , stdThrsh=stdThrsh )
+    data <- readACF( dpath=data , lags=lags , ranges=ranges , stdThrsh=stdThrsh )
+
+    par1 <- formals()
+    par1['...'] <- NULL
+    par2 <- list(...)
+    par1names <- names(par1)
+    par1 <- lapply( names( par1 ) , FUN=function(x){ eval( as.name( x ) ) } )
+    names(par1) <- par1names
+    par <- c(par1,par2)
     
-    par <- formals()
-    parnames <- names(par)
-    par <- lapply( names( par ) , FUN=function(x){ eval( as.name( x ) ) } )
-    names(par) <- parnames
+    ## par <- formals()
+    ## parnames <- names(par)
+    ## par <- lapply( names( par ) , FUN=function(x){ eval( as.name( x ) ) } )
+    ## names(par) <- parnames
     
     do.call(plotACF,par)
     
 }
 
-plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
+plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
 {
     
     ## copy the data list
@@ -206,37 +216,70 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
     if (length(l)>1){
         par(cex.axis=cex,cex.lab=cex,cex.main=cex,bg=bg,fg=fg,lwd=cex,col.lab=fg,
             col.axis=fg,col.main=fg,bty='n',mar=c(5,8,0,0)*cex,mgp=c(6,2,0)*cex)
+        if(length(r)>1){
+            print(
+                levelplot(
+                    z~x*y,
+                    grid,
+                    col.regions=col.regions,
+                    ylim=ylim,
+                    xlim=xlim,
+                    at=seq(zlim[1],zlim[2],length.out=100),
+                    cuts=100,
+                    xlab=list(xlab,cex=cex,col=fg),
+                    ylab=list(ylab,cex=cex,col=fg),
+                    colorkey=list(labels=list(col=fg,cex=cex),title=list(colorkeyTitle,cex=cex,col=fg)),
+                    scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE))),
+                    xscale.components = xscale.components.log10ticks,
+                    main=main,
+                    ...
+                    
+                )
+            )
+        }else{
+
+            print(
+                xyplot(
+                    z~x,
+                    grid,
+                    ylim=zlim,
+                    xlim=xlim,
+                    xlab=list(xlab,cex=cex,col=fg),
+                    ylab=list(colorkeyTitle,cex=cex,col=fg),
+                    scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE))),
+                    xscale.components = xscale.components.log10ticks,
+                    main=main,
+                    ...
+                )
+            )
+            
+        }
+    }else{
+        par(cex.axis=cex,cex.lab=cex,cex.main=cex,bg=bg,fg=fg,lwd=cex,col.lab=fg, col.axis=fg,col.main=fg,bty='n',mar=c(5,8,0,0)*cex,mgp=c(6,2,0)*cex)
         print(
-            levelplot(
-                z~x*y,
+            xyplot(
+                y~z,
                 grid,
-                col.regions=col.regions,
                 ylim=ylim,
-                xlim=xlim,
-                at=seq(zlim[1],zlim[2],length.out=100),
-                cuts=100,
-                xlab=list(xlab,cex=cex,col=fg),
+                xlim=zlim,
+                xlab=list(colorkeyTitle,cex=cex,col=fg),
                 ylab=list(ylab,cex=cex,col=fg),
-                colorkey=list(labels=list(col=fg,cex=cex),title=list(colorkeyTitle,cex=cex,col=fg)),
-                scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE))),
-                xscale.components = xscale.components.log10ticks,
+                scales=list(col=fg,cex=cex),
                 main=main,
                 ...
             )
         )
-    }else{
-        par(cex.axis=cex,cex.lab=cex,cex.main=cex,bg=bg,fg=fg,lwd=cex,col.lab=fg,
-            col.axis=fg,col.main=fg,bty='n',mar=c(5,8,0,0)*cex,mgp=c(6,2,0)*cex)
-        plot(
-            grid$z,
-            grid$y,
-            ylab=ylab,
-            xlim=zlim,
-            ylim=ylim,
-            type='l',
-            xlab='',
-            main=main
-        )
+
+        ## plot(
+        ##     grid$z,
+        ##     grid$y,
+        ##     ylab=ylab,
+        ##     xlim=zlim,
+        ##     ylim=ylim,
+        ##     type='l',
+        ##     xlab='',
+        ##     main=main
+        ## )
     }
     
     if(!is.null(pdf)) dev.off()
