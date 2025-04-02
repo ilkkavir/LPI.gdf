@@ -12,12 +12,13 @@
 ##  ranges    range gate selection
 ##  stdThrsh  standard deviation threshold, data points with standard
 ##            deviation larger than stdThrsh are not used in the average
+##  timeLimits time limits as unix times c(secs1,secs2) or as a list of vectors list(c(year1,month1,day1,hour1,minute1,second1),c(year2,...))
 ##
 ## Returns:
 ##  ACF an ACF list of the averaged data
 ## 
 
-readACF <- function( dpath , lags=NULL , ranges=NULL , stdThrsh=Inf )
+readACF <- function( dpath , lags=NULL , ranges=NULL , stdThrsh=Inf , timeLimits)
   {
     
     if(is.null(dpath))   return(NULL)
@@ -36,6 +37,20 @@ readACF <- function( dpath , lags=NULL , ranges=NULL , stdThrsh=Inf )
     }
     flist <- c(flist,fpath)
     
+      ## if time limits were given
+      if(!is.null(timeLimits)){
+          if(is.list(timeLimits)){
+              tlims <- c(0,0)
+              tlims[1] <- as.double(ISOdate(timeLimits[[1]][1],timeLimits[[1]][2], timeLimits[[1]][3],timeLimits[[1]][4], timeLimits[[1]][5],timeLimits[[1]][6])) + timeLimits[[1]][6]%%1
+              tlims[2] <- as.double(ISOdate(timeLimits[[2]][1],timeLimits[[2]][2], timeLimits[[2]][3],timeLimits[[2]][4], timeLimits[[2]][5],timeLimits[[2]][6])) + timeLimits[[2]][6]%%1
+          }else{
+              tlims <- timeLimits
+          }
+          ## timestamps from file names
+          tstamps  <- tstamps <- lapply(flist,function(x){sapply(x,function(x){as.numeric(substr(rev(unlist(strsplit(x,.Platform[["file.sep"]])))[1],1,13))/1000})})
+          flist  <- flist[tstamps>tlims[1] & tstamps<=tlims[2]]
+      }
+      
     if(length(flist)==0) return(NULL)
     
     # number of data files

@@ -54,12 +54,12 @@
 ##
 
 
-plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL, SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
+plotACF <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL, SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle=ifelse(substr(tolower(part),1,2)=='er','STD [arb. units]','Power [arb. units]') , col.regions=beer , fontsize=12 , ... )
 {
     UseMethod("plotACF")
 }
 
-plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL, SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
+plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL, SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle=ifelse(substr(tolower(part),1,2)=='er','STD [arb. units]','Power [arb. units]') , col.regions=beer , fontsize=12  , ... )
 {
     
     data <- readACF( dpath=data , lags=lags , ranges=ranges , stdThrsh=stdThrsh )
@@ -81,7 +81,7 @@ plotACF.character <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum
     
 }
 
-plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle='Power [arb. units]' , col.regions=beer , ... )
+plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL , zlim=NULL , ylim=NULL , xlim=NULL , cex=1 , bg='white' , fg='black' , width=8.27 , height=11.69 , paper='a4' , res=300 , stdThrsh=Inf , yheight=FALSE , llhT=NULL , azelT=NULL , llhR=NULL , lags=NULL , ranges=NULL , SIunits=TRUE , xlog=FALSE , rscale=FALSE , main=NULL , xlab=NULL , ylab=NULL , colorkeyTitle=ifelse(substr(tolower(part),1,2)=='er','STD [arb. units]','Power [arb. units]') , col.regions=beer , fontsize=12  , ... )
 {
     
     ## copy the data list
@@ -164,9 +164,9 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
     
     if(is.null(main)){
         main <- switch(substr(tolower(part),1,2),
-                       re   = list(paste(data$timeString,' real part'),cex=cex,col=fg),
-                       im   = list(paste(data$timeString,' imaginary part'),cex=cex,col=fg),
-                       er   = list(paste(data$timeString,' standard deviation'),cex=cex,col=fg),
+                       re   = paste(data$timeString,' real part'),
+                       im   = paste(data$timeString,' imaginary part'),
+                       er   = paste(data$timeString,' standard deviation'),
                        )
     }
     
@@ -226,12 +226,12 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
                     xlim=xlim,
                     at=seq(zlim[1],zlim[2],length.out=100),
                     cuts=100,
-                    xlab=list(xlab,cex=cex,col=fg),
-                    ylab=list(ylab,cex=cex,col=fg),
-                    colorkey=list(labels=list(col=fg,cex=cex),title=list(colorkeyTitle,cex=cex,col=fg)),
-                    scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE))),
+                    xlab=list(xlab,cex=cex,col=fg,fontsize=fontsize),
+                    ylab=list(ylab,cex=cex,col=fg,fontsize=fontsize),
+                    colorkey=list(labels=list(col=fg,cex=cex),title=list(colorkeyTitle,cex=cex,col=fg,fontsize=fontsize)),
+                    scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE)),fontsize=fontsize),
                     xscale.components = xscale.components.log10ticks,
-                    main=main,
+                    main=list(main,cex=cex,fontsize=fontsize,col=fg),
                     ...
                     
                 )
@@ -244,11 +244,11 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
                     grid,
                     ylim=zlim,
                     xlim=xlim,
-                    xlab=list(xlab,cex=cex,col=fg),
-                    ylab=list(colorkeyTitle,cex=cex,col=fg),
-                    scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE))),
+                    xlab=list(xlab,cex=cex,col=fg,fontsize=fontsize),
+                    ylab=list(colorkeyTitle,cex=cex,col=fg,fontsize=fontsize),
+                    scales=list(col=fg,cex=cex,x=list(log=ifelse(xlog,10,FALSE)),fontsize=fontsize),
                     xscale.components = xscale.components.log10ticks,
-                    main=main,
+                    main=list(main,cex=cex,fontsize=fontsize,col=fg),
                     ...
                 )
             )
@@ -265,7 +265,7 @@ plotACF.list <- function( data , part='real' , pdf=NULL , jpg=NULL , figNum=NULL
                 xlab=list(colorkeyTitle,cex=cex,col=fg),
                 ylab=list(ylab,cex=cex,col=fg),
                 scales=list(col=fg,cex=cex),
-                main=main,
+                main=list(main,cex=cex,fontsize=fontsize,col=fg),
                 ...
             )
         )
