@@ -18,7 +18,7 @@
 ##  ACF an ACF list of the averaged data
 ## 
 
-readACF <- function( dpath , lags=NULL , ranges=NULL , stdThrsh=Inf , timeLimits)
+readACF <- function( dpath , lags=NULL , ranges=NULL , stdThrsh=Inf , timeLimits=NULL)
   {
     
     if(is.null(dpath))   return(NULL)
